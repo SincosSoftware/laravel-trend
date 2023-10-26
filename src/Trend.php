@@ -67,6 +67,11 @@ class Trend
         return $this->interval('day');
     }
 
+    public function perWeek(): self
+    {
+        return $this->interval('week');
+    }
+
     public function perMonth(): self
     {
         return $this->interval('month');
