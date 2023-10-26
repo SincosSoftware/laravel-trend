@@ -140,7 +140,7 @@ class Trend
     public function mapValuesToDates(Collection $values): Collection
     {
         $values = $values->map(fn ($value) => new TrendValue(
-            date: Carbon::parse($value->{$this->dateAlias})->toJSON(),
+            date: $this->getCarbonDate($value->{$this->dateAlias})->toJSON(),
             aggregate: $value->aggregate,
         ));
 
@@ -180,16 +180,14 @@ class Trend
         return $adapter->format($this->dateColumn, $this->interval);
     }
 
-    protected function getCarbonDateFormat(): string
+    protected function getCarbonDate($value): Carbon
     {
-        return match ($this->interval) {
-            'minute' => 'Y-m-d H:i:00',
-            'hour' => 'Y-m-d H:00',
-            'day' => 'Y-m-d',
-            'week' => 'Y-W',
-            'month' => 'Y-m',
-            'year' => 'Y',
-            default => throw new Error('Invalid interval.'),
-        };
+        if ($this->interval == 'week') {
+            $date = explode('-', $value);
+
+            return Carbon::now()->setISODate($date[0],$date[1])->startOfDay();
+        }
+
+        return Carbon::parse($value);
     }
 }
