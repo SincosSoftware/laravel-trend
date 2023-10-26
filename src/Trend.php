@@ -141,7 +141,7 @@ class Trend
     {
         $values = $values->map(fn ($value) => new TrendValue(
             date: $this->getCarbonDate($value->{$this->dateAlias})->toJSON(),
-            aggregate: $value->aggregate,
+            aggregate: round($value->aggregate, 2),
         ));
 
         $placeholders = $this->getDatePeriod()->map(
